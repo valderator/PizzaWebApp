@@ -27,12 +27,12 @@ namespace PizzaAPI.Repositories
             return true;
         }
 
-        public async Task<List<ShoppingCart>> GetAll()
+        public async Task<List<ShoppingCart>?> GetAll()
         {
             return await context.ShoppingCarts.ToListAsync();
         }
 
-        public async Task<ShoppingCart> GetById(int id)
+        public async Task<ShoppingCart?> GetById(int id)
         {
             return await context.ShoppingCarts.FindAsync(id);
         }
@@ -42,7 +42,7 @@ namespace PizzaAPI.Repositories
             return context.ShoppingCarts.Where(cart => cart.UserID == userID).ToList();
         }
 
-        public Pizza GetPizzaByPizzaId(int? pizzaID)
+        public Pizza? GetPizzaByPizzaId(int? pizzaID)
         {
             return context.Pizzas.Where(pizza => pizza.Id == pizzaID).FirstOrDefault();
         }
@@ -61,6 +61,25 @@ namespace PizzaAPI.Repositories
                 return false;
             }
             return true;
+        }
+
+        public async void removePizzas(int id)
+        {
+            var cart = GetAll().Result;
+
+            if (cart == null)
+            {
+                return;
+            }
+
+            foreach(ShoppingCart shoppingCart in cart)
+            {
+                if(shoppingCart.PizzaID == id)
+                {
+                    context.Remove(shoppingCart);
+                }
+            }
+            await context.SaveChangesAsync();
         }
     }
 }

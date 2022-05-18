@@ -34,37 +34,7 @@ namespace PizzaAPI.Controllers
         {
             var res = service.Authenticate(request);
 
-            var cookieOptions = new CookieOptions
-            {
-                Expires = DateTime.UtcNow.AddDays(7),
-            };
-
-            Response.Cookies.Append("PizzaAPI", res, cookieOptions);
-
-
-            /*const string sessionKey = "PizzaAPI";
-            var value = HttpContext.Session.GetString(sessionKey);
-
-            if (string.IsNullOrEmpty(value))
-            {
-                HttpContext.Session.SetString(sessionKey, res);
-            }
-            else
-            {
-                HttpContext.Session.SetString(sessionKey, "");
-            }*/
-
             return Ok(res.ToString());
-        }
-
-        [HttpPost("SignOut")]
-        public void Signout()
-        {
-            /*HttpContext httpContext = contextAccessor.HttpContext;
-
-            const string sessionKey = "PizzaAPI";
-            httpContext.Session.SetString(sessionKey, "");*/
-            Response.Cookies.Append("PizzaAPI", "");
         }
 
         [HttpGet("GetAll")]//, Authorize(Roles = "ADMIN")]

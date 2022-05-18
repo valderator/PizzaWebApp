@@ -51,7 +51,12 @@ namespace PizzaAPI.Services
             var pizzas = new List<Pizza>();
             foreach (var item in items)
             {
-                pizzas.Add(cartRepository.GetPizzaByPizzaId(item.PizzaID));
+                var pizza = cartRepository.GetPizzaByPizzaId(item.PizzaID);
+
+                if (pizza != null)
+                {
+                    pizzas.Add(pizza);
+                }
             }
             return pizzas;
         }

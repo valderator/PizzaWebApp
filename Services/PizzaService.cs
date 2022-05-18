@@ -8,10 +8,12 @@ namespace PizzaAPI.Services
     public class PizzaService : IPizzaService
     {
         private readonly IPizzaRepository repository;
+        private readonly IShoppingCartRepository cartRepository;
 
-        public PizzaService(IPizzaRepository repository)
+        public PizzaService(IPizzaRepository repository, IShoppingCartRepository cartRepository)
         {
             this.repository = repository;
+            this.cartRepository = cartRepository;
         }
 
         public Pizza? AddPizza(PizzaDTO request)
@@ -42,7 +44,7 @@ namespace PizzaAPI.Services
             {
                 return false;
             }
-
+            cartRepository.removePizzas(pizza.Id);
             return repository.Delete(pizza);
         }
 
