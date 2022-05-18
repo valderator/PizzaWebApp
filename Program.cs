@@ -11,8 +11,6 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
-//update
-//update2
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddControllers()
