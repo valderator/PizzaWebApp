@@ -32,7 +32,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ShoppingCart() {
+export default function ShoppingCart(props) {
   const classes = useStyles();
 
   const [items, setItems] = useState([]);
@@ -41,32 +41,21 @@ export default function ShoppingCart() {
   const navigate = useNavigate();
   
   useEffect (() => {
-    const token = localStorage.getItem("PizzaAPIUserToken");
+      var user = localStorage.getItem("PizzaAPIUsername");
 
-    createAPIEndpoint(ENDPOINTS.user)
-      .getLoggedUser(token)
-      .then(res => {
-        if(res != -1){
-          setUserID(res);
-        }
-      })
-      .catch(err => console.log(err));
+      createAPIEndpoint(ENDPOINTS.cart)
+          .getShoppingItems(user)
+          .then(res => {
+              setItems(res.data);
+              var cost = 0;
+              res.data.forEach(item => {
+                  cost += item.price;
+              })
+              setTotalCost(cost.toFixed(2));
+          })
+          .catch(err => console.log(err));
   }, []);
-
-  useEffect (() => {
-    createAPIEndpoint(ENDPOINTS.cart)
-      .getShoppingItems(userID.data)
-      .then(res =>{
-        setItems(res.data);
-        var cost = 0;
-        res.data.forEach(item => {
-          cost += item.price;
-        })
-        setTotalCost(cost.toFixed(2));
-      })
-      .catch(err => console.log(err));
-  }, [userID]);
-
+  
   const gotoCreditCard = () => {
     navigate("/payment");
   }

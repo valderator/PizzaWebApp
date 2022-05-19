@@ -19,14 +19,16 @@ export default function AllPizzas() {
   useEffect(() => {
     const token = localStorage.getItem("PizzaAPIUserToken");
 
-    createAPIEndpoint(ENDPOINTS.user)
-    .getLoggedUser(token)
-    .then(res => {
-      if(res != -1){
-        setUserID(res);
+      if (token !== "") {
+          createAPIEndpoint(ENDPOINTS.user)
+              .getLoggedUser(token)
+              .then(res => {
+                  if (res !== -1) {
+                      setUserID(res);
+                  }
+              })
+              .catch(err => console.log(err));
       }
-    })
-    .catch(err => console.log(err));
 
     createAPIEndpoint(ENDPOINTS.pizza)
     .fetch()

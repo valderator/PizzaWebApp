@@ -8,8 +8,9 @@ namespace PizzaAPI.Services.Interfaces
         public ShoppingCart Add(ShoppingCartDTO request);
         public ShoppingCart GetShoppingCart(int id);
         List<ShoppingCart> GetAllShoppingCarts();
-        List<Pizza> GetCartByUserID(int userID);
+        List<Pizza> GetCartByUsername(string username);
         bool DeleteShoppingCart(int id);
         Task<ShoppingCart> UpdateShoppingCart(int id, ShoppingCartDTO cart);
+        void clearTheShoppingCart(string username);
     }
 }
