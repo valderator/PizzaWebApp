@@ -71,14 +71,25 @@ export default function Login() {
             onClick={() => {
               createAPIEndpoint(ENDPOINTS.user)
                 .login({ username: username, password: password })
-                .then((res) => {
-                  if (res.data.length < 30) {
-                    alert(res.data);
-                  } else {
-                    alert("Logged in successfully!");
-                    localStorage.setItem("PizzaAPIUserToken", res.data);
-                    gotoHomepage();
-                  }
+                  .then((res) => {
+                      var token = res.data;
+                      if (token.length < 30) {
+                          alert(token);
+                      } else {
+                          localStorage.setItem("PizzaAPIUserToken", token);
+
+                          createAPIEndpoint(ENDPOINTS.user)
+                              .parseToken(token)
+                                  .then((res) => {
+                                      var info = res.data;
+                                      localStorage.setItem("PizzaAPIUsername", info[0]);
+                                      localStorage.setItem("PizzaAPIUserRole", info[1]);
+                                  })
+                                  .catch((err) => console.log(err));
+
+                          alert("Logged in successfully!");
+                          gotoHomepage();
+                      }
                 })
                 .catch((err) => console.log(err));
             }}> Login </Button>
