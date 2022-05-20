@@ -8,10 +8,12 @@ namespace PizzaAPI.Services
     public class ShoppingCartService : IShoppingCartService
     {
         private readonly IShoppingCartRepository cartRepository;
+        private readonly IUserRepository userRepository;
 
-        public ShoppingCartService(IShoppingCartRepository cartRepository)
+        public ShoppingCartService(IShoppingCartRepository cartRepository, IUserRepository userRepository)
         {
             this.cartRepository = cartRepository;
+            this.userRepository = userRepository;
         }
 
         public ShoppingCart Add(ShoppingCartDTO request)
@@ -44,9 +46,10 @@ namespace PizzaAPI.Services
             return cartRepository.GetAll().Result;
         }
 
-        public List<Pizza> GetCartByUserID(int userID)
+       public List<Pizza> GetCartByUsername(string username)
         {
-            var items = cartRepository.GetItemsById(userID);
+            var user = userRepository.GetUserByUsername(username);
+            var items = cartRepository.GetItemsById(user.Id);
 
             var pizzas = new List<Pizza>();
             foreach (var item in items)
@@ -82,6 +85,21 @@ namespace PizzaAPI.Services
             }
 
             return cartRepository.Put(item);
+        }
+
+        public void clearTheShoppingCart(string username)
+        {
+            List<ShoppingCart> cart = GetAllShoppingCarts();
+
+            var user = userRepository.GetUserByUsername(username);
+
+            foreach(ShoppingCart item in cart)
+            {
+                if(item.UserID == user.Id)
+                {
+                    cartRepository.Delete(item);
+                }
+            }
         }
     }
 }

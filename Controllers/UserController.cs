@@ -107,5 +107,12 @@ namespace PizzaAPI.Controllers
 
             return user.Id;
         }
+
+        [HttpPost("parseToken/{token}")]
+        public List<string> ParseToken(string token)
+        {
+            List<string> info = service.ParseTokenToGetInfo(token);
+            return info;
+        }
     }
 }

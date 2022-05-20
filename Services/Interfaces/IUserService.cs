@@ -15,5 +15,8 @@ namespace PizzaAPI.Services.Interfaces
         User GetUserByUsername(string username);
         void ToUSER(int id);
         void ToADMIN(int id);
+
+        List<string> ParseTokenToGetInfo(string token);
+
     }
 }

@@ -6,6 +6,7 @@ import Button from "@material-ui/core/Button";
 import "react-credit-cards/es/styles-compiled.css";
 import MenuPizza from "./MenuPizza";
 import { useNavigate } from "react-router-dom";
+import { createAPIEndpoint, ENDPOINTS } from ".";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -110,17 +111,21 @@ export default function CreditCard() {
                     helperText={numberHelper} onFocus={changeFocusHandler} onChange={numberChangedHandler} />
           <TextField error={errorName} id="name" variant="outlined" placeholder="Card-holder name"
                      helperText={nameHelper} onFocus={changeFocusHandler} onChange={nameChangedHandler} />
-          <TextField error={errorExpiry} id="expiry" type="number" variant="outlined" placeholder="Expiry date(Month)"
+          <TextField error={errorExpiry} id="expiry" type="number" variant="outlined" placeholder="Expiry date"
                      helperText={expiryHelper} onFocus={changeFocusHandler} onChange={expiryChangedHandler} />
           <TextField error={errorCVC} id="cvc" type="number" variant="outlined" placeholder="CVC"
                      helperText={cvcHelper} onFocus={changeFocusHandler} onChange={cvcChangedHandler} />
           <div className={classes.button2}>
             <Button size="large" variant="contained" color="primary"
               onClick={() => {
-                alert(
-                  "Your payment has been aproved, thank you for your purchase!"
-                );
-                navigate("/homepage");
+                var username = localStorage.getItem("PizzaAPIUsername");
+                createAPIEndpoint(ENDPOINTS.cart)
+                  .clearTheShoppingCart(username)
+                  .then((res) => {
+                      alert("Your payment has been aproved, thank you for your purchase!");
+                      navigate("/homepage");
+                  })
+                  .catch(err => console.log(err));
               }} > Pay </Button>
           </div>
         </div>

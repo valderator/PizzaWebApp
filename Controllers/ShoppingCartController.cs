@@ -41,10 +41,10 @@ namespace PizzaAPI.Controllers
             return service.GetAllShoppingCarts();
         }
 
-        [HttpPost("GetItems/{userID}")]
-        public List<Pizza> GetItems(int userID)
+        [HttpPost("GetItems/{username}")]
+        public List<Pizza> GetItems(string username)
         {
-            return service.GetCartByUserID(userID);
+            return service.GetCartByUsername(username);
         }
 
         [HttpDelete("Delete/{id}")]
@@ -71,6 +71,12 @@ namespace PizzaAPI.Controllers
             }
 
             return Ok(res);
+        }
+
+        [HttpPost("clearShoppingCart/{username}")]
+        public void ClearTheShoppingCart(string username)
+        {
+            service.clearTheShoppingCart(username);
         }
     }
 }

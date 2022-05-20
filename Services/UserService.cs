@@ -246,5 +246,36 @@ namespace PizzaAPI.Services
 
             repository.Put(user);
         }
+
+        public List<string> ParseTokenToGetInfo(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+                return null;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(configuration.GetSection("AppSettings:Token").Value);
+
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
+            }, out SecurityToken validatedToken);
+
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            var username = jwtToken.Claims.First(x => x.Type == ClaimTypes.Name).Value;
+            var role = jwtToken.Claims.First(x => x.Type == ClaimTypes.Role).Value;
+            var email = jwtToken.Claims.First(x => x.Type == ClaimTypes.Email).Value;
+
+            List<string> info = new List<string>();
+
+            info.Add(username);
+            info.Add(role);
+            info.Add(email);
+
+            return info;
+        }
     }
 }
