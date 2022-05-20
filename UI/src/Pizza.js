@@ -38,12 +38,17 @@ export default function Pizza(props) {
         <CardActions>
           <Button size="small" color="primary"
             onClick={() => {
-              createAPIEndpoint(ENDPOINTS.cart)
-                .post({userID: props.userID, pizzaID: props.id})
-                .then(res => {
-                  alert("Pizza added to the shopping cart!");
-                })
-                .catch(err => console.log(err));
+              if(localStorage.getItem("PizzaAPIUsername") === ""){
+                  alert("You must login first.");
+              } else {
+                  createAPIEndpoint(ENDPOINTS.cart)
+                      .post({ userID: props.userID, pizzaID: props.id })
+                      .then(res => {
+                          alert("Pizza added to the shopping cart!");
+                      })
+                      .catch(err => console.log(err));
+              }
+              
             }}> Add to cart </Button>
         </CardActions>
       </Card>
