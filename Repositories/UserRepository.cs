@@ -47,5 +47,10 @@ namespace PizzaAPI.Repositories
         {
             return context.Users.Where(user => user.Username == username).FirstOrDefault();
         }
+
+        public List<User> GetNotConfirmedUsers()
+        {
+            return context.Users.Where(user => user.isConfirmed == false).ToList();
+        }
     }
 }

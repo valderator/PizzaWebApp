@@ -21,10 +21,20 @@ namespace PizzaAPI.Services
             this.configuration = configuration;
             this.repository = repository;
         }
+        public string GenerateSignupConfirmationKey()
+        {
+            var chars = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+            var rand = new Random();
+
+            String confirmationKey = new String("");
+            for (int i = 0; i < 64; i++)
+                confirmationKey += chars[rand.Next(0, chars.Length)];
+
+            return confirmationKey;
+        }
 
         public User? AddUser(UserDTO request)
         {
-
             if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password)
                 || string.IsNullOrWhiteSpace(request.Email))
             {
@@ -38,6 +48,9 @@ namespace PizzaAPI.Services
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
             user.Role = "USER";
+            user.isConfirmed = false;
+            user.ConfirmationKey = GenerateSignupConfirmationKey();
+            var confirmationLink = "https://localhost:7132/api/User/validateAccount";
 
             try
             {
@@ -45,6 +58,7 @@ namespace PizzaAPI.Services
                 if (mail.Host.Contains('.') && mail.Address.Contains('@'))
                 {
                     user.Email = request.Email;
+                    EmailSenderService.SendSignupConfirmationEmail(user.Email, user.ConfirmationKey, confirmationLink);
                     return repository.Add(user);
                 }
                 else
@@ -70,6 +84,11 @@ namespace PizzaAPI.Services
             if (VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt) == false)
             {
                 return "Password is incorrect!";
+            }
+
+            if(user.isConfirmed == false)
+            {
+                return "Account not confirmed, please check your email.";
             }
 
             string token = CreateToken(user);
@@ -276,6 +295,24 @@ namespace PizzaAPI.Services
             info.Add(email);
 
             return info;
+        }
+
+        public bool ConfirmAccount(string confirmationKey)
+        {
+            var notConfirmedUsers = repository.GetNotConfirmedUsers();
+
+            foreach (User user in notConfirmedUsers)
+            {
+                if(user.ConfirmationKey == confirmationKey)
+                {
+                    user.isConfirmed = true;
+                    user.ConfirmationKey = "";
+                    repository.Put(user);
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

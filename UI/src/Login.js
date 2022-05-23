@@ -73,7 +73,7 @@ export default function Login() {
                 .login({ username: username, password: password })
                   .then((res) => {
                       var token = res.data;
-                      if (token.length < 30) {
+                      if (token.length < 100) {
                           alert(token);
                       } else {
                           localStorage.setItem("PizzaAPIUserToken", token);

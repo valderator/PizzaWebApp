@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PizzaAPI.DBContext;
 
@@ -11,9 +12,10 @@ using PizzaAPI.DBContext;
 namespace PizzaAPI.Migrations
 {
     [DbContext(typeof(PizzaDBContext))]
-    partial class PizzaDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220520150244_confirmation")]
+    partial class confirmation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

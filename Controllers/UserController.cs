@@ -10,10 +10,12 @@ namespace PizzaAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService service;
+        private readonly IMailService mailService;
 
-        public UserController(IUserService service)
+        public UserController(IUserService service, IMailService mailService)
         {
             this.service = service;
+            this.mailService = mailService;
         }
 
         [HttpPost("Add")]
@@ -26,7 +28,29 @@ namespace PizzaAPI.Controllers
                 return BadRequest("Something wrong happened, try again.");
             }
 
-            return Ok(res);
+            string confirmationLink = "https://localhost:3000/confirmYourAccount";
+            MailRequest mailRequest = new MailRequest
+            {
+                ToEmail = res.Email,
+                Subject = "Thank you for registering with our services",
+                Body = "<h3>Hello from PizzaAPI Team,</h3>" + "<br/>" +
+                "<p>Thank you for creating an account on our website. To confirm your newly " +
+                "created account, please follow the steps presented below</p> " +
+                "<h4>Please enter this code: " + res.ConfirmationKey + "</h4>" +
+                "<h4>In this link <a href=" + confirmationLink + ">Click here</a></h4>" +
+                "<br><p>Kind regards,</p>" +
+                "<p>PizzaAPI Team</p>",
+            };
+
+            try
+            {
+                mailService.SendEmailAsync(mailRequest);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost("Login")]
@@ -79,7 +103,7 @@ namespace PizzaAPI.Controllers
                 return BadRequest("Something wrong happened, try again.");
             }
 
-            return Ok(res);
+            return Ok();
         }
 
         [HttpPost("ToUSER/{id}")]
@@ -95,7 +119,7 @@ namespace PizzaAPI.Controllers
         }
 
         [HttpPost("GetLoggedUser/{cookie}")]
-        public int GetLoggedUser(string cookie)
+        public int GetLoggedUserID(string cookie)
         {
             var username = service.GetLoggedInUser(cookie);
             var user = service.GetUserByUsername(username);
@@ -113,6 +137,12 @@ namespace PizzaAPI.Controllers
         {
             List<string> info = service.ParseTokenToGetInfo(token);
             return info;
+        }
+
+        [HttpPost("confirmYourAccount/{confirmationKey}")]
+        public bool ConfirmAccount(string confirmationKey)
+        {
+            return service.ConfirmAccount(confirmationKey);
         }
     }
 }
