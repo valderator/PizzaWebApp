@@ -15,11 +15,13 @@ namespace PizzaAPI.Services
     {
         private readonly IConfiguration configuration;
         private readonly IUserRepository repository;
+        private readonly IShoppingCartRepository cartRepository;
 
-        public UserService(IConfiguration configuration, IUserRepository repository)
+        public UserService(IConfiguration configuration, IUserRepository repository, IShoppingCartRepository cartRepository)
         {
             this.configuration = configuration;
             this.repository = repository;
+            this.cartRepository = cartRepository;
         }
         public string GenerateSignupConfirmationKey()
         {
@@ -50,7 +52,6 @@ namespace PizzaAPI.Services
             user.Role = "USER";
             user.isConfirmed = false;
             user.ConfirmationKey = GenerateSignupConfirmationKey();
-            var confirmationLink = "https://localhost:7132/api/User/validateAccount";
 
             try
             {
@@ -58,7 +59,6 @@ namespace PizzaAPI.Services
                 if (mail.Host.Contains('.') && mail.Address.Contains('@'))
                 {
                     user.Email = request.Email;
-                    EmailSenderService.SendSignupConfirmationEmail(user.Email, user.ConfirmationKey, confirmationLink);
                     return repository.Add(user);
                 }
                 else
@@ -86,7 +86,7 @@ namespace PizzaAPI.Services
                 return "Password is incorrect!";
             }
 
-            if(user.isConfirmed == false)
+            if (user.isConfirmed == false)
             {
                 return "Account not confirmed, please check your email.";
             }
@@ -185,6 +185,13 @@ namespace PizzaAPI.Services
             if (user == null)
             {
                 return false;
+            }
+
+            var shoppingCart = cartRepository.GetItemsById(user.Id);
+
+            foreach(ShoppingCart cart in shoppingCart)
+            {
+                cartRepository.Delete(cart);
             }
 
             return repository.Delete(user);
@@ -303,7 +310,7 @@ namespace PizzaAPI.Services
 
             foreach (User user in notConfirmedUsers)
             {
-                if(user.ConfirmationKey == confirmationKey)
+                if (user.ConfirmationKey == confirmationKey)
                 {
                     user.isConfirmed = true;
                     user.ConfirmationKey = "";
