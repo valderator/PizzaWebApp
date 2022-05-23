@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PizzaAPI.DBContext;
+using PizzaAPI.Models;
 using PizzaAPI.Repositories;
 using PizzaAPI.Repositories.Interfaces;
 using PizzaAPI.Services;
@@ -63,11 +64,12 @@ builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPizzaService, PizzaService>();
 builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
-
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<IMailService, MailService>();
 
 builder.Services.AddDbContext<PizzaDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("PizzaSQL")));
+
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 var app = builder.Build();
 

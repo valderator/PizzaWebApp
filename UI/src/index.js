@@ -27,7 +27,8 @@ export const createAPIEndpoint = (endpoint) => {
     getLoggedUser: (cookie) => axios.post(url + "GetLoggedUser/" + cookie),
     getShoppingItems: (user) => axios.post(url + "GetItems/" + user),
     parseToken: (token) => axios.post(url + "parseToken/" + token),
-    clearTheShoppingCart: (username) => axios.post(url + "clearShoppingCart/" + username)
+    clearTheShoppingCart: (username) => axios.post(url + "clearShoppingCart/" + username),
+    confirmAccount: (confirmationKey) => axios.post(url + "confirmYourAccount/" + confirmationKey)
   };
 };
 

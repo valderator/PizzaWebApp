@@ -30,5 +30,10 @@ namespace PizzaAPI.Entities
 
         [Column(TypeName = "varchar(1024)")]
         public string? Token { get; set; }
+
+        public bool isConfirmed { get; set; }
+
+        [Column(TypeName = "varchar(255)")]
+        public string? ConfirmationKey { get; set; }
     }
 }

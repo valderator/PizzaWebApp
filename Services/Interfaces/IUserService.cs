@@ -17,6 +17,6 @@ namespace PizzaAPI.Services.Interfaces
         void ToADMIN(int id);
 
         List<string> ParseTokenToGetInfo(string token);
-
+        bool ConfirmAccount(string confirmationKey);
     }
 }

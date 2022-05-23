@@ -37,7 +37,6 @@ export default function ShoppingCart(props) {
 
   const [items, setItems] = useState([]);
   const [totalCost, setTotalCost] = useState(0);
-  const [userID, setUserID] = useState(-1);
   const navigate = useNavigate();
   
   useEffect (() => {

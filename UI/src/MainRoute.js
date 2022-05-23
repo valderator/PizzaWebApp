@@ -6,6 +6,7 @@ import Homepage from "./Homepage";
 import ShoppingCart from "./ShoppingCart";
 import CreditCard from "./CreditCard";
 import Login from "./Login";
+import ConfirmAccount from "./ConfirmAccount";
 
 export default function MainRoute() {
 
@@ -17,6 +18,7 @@ export default function MainRoute() {
       <Route path="/shoppingCart" element={<ShoppingCart />} />
       <Route path="/login" element={<Login />} />
       <Route path="/payment" element={<CreditCard />} />
+      <Route path="/confirmYourAccount" element={<ConfirmAccount />} />
     </Routes>
   );
 }
